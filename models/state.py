@@ -1,12 +1,11 @@
 #!/usr/bin/python3
 """Defines the State class."""
 
-import models
-from os import getenv
-from models.base_model import Base, BaseModel
-from models.city import City, Column, String
+from models.base_model import BaseModel, Base
+from models.city import City
+from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
-
+from os import getenv
 
 class State(BaseModel, Base):
     """a state for a MySQL database"""
