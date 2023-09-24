@@ -74,8 +74,15 @@ class FileStorage:
             pass
 
     def delete(self, obj=None):
-        """Delete a given object from __objects, if it exists."""
-        try:
-            del self.__objects["{}.{}".format(type(obj).__name__, obj.id)]
-        except (AttributeError, KeyError):
-            pass
+        """ Deletes obj from the __objects list """
+        if obj is not None and hasattr(obj, "id"):
+            # construct the key based on the object class and id
+            key = obj.__class__.__name__ + "." + obj.id
+
+            # delete the object if it exists in the __objects list
+            if key in self.__objects:
+                del self.__objects[key]
+
+    def close(self):
+        """ Calls reload() for deserializing JSON file to objects """
+        self.reload()    
