@@ -48,7 +48,7 @@ class DBStorage:
                 objects = self.__session.query(cls).all()
 
                 for object in objects:
-                    key = f"{object.__class__.__name__}.{object.id}"
+                    key = "{}.{}".format(object.__class__.__name__, object.id)
                     dictionary[key] = object
         else:
             """query to return all objects of the type, cls in the db"""
