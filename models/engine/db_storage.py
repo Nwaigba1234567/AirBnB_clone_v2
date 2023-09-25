@@ -1,5 +1,8 @@
 #!/usr/bin/python3
-"""DB Storage Engine"""
+"""
+This module defines a class to manage
+database storage for hbnb clone
+"""
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from os import getenv
@@ -13,20 +16,21 @@ from models.review import Review
 
 
 class DBStorage:
-    """Database storage engine"""
+    """This class manages storage of hbnb models in a database"""
     __engine = None
     __session = None
 
     def __init__(self):
-        """database connection details got from env variables"""
+        # database connection details got from env variables
         user = getenv("HBNB_MYSQL_USER")
         pwd = getenv("HBNB_MYSQL_PWD")
         host = getenv("HBNB_MYSQL_HOST")
         db = getenv("HBNB_MYSQL_DB")
 
-        """create the engine"""
+        # create the engine
         self.__engine = create_engine(
-            f'mysql+mysqldb://{user}:{pwd}@{host}/{db}',
+            'mysql+mysqldb://{}:{}@{}/{}'
+            .format(user, pwd, host, db),
             pool_pre_ping=True)
 
         if getenv("HBNB_ENV ") == "test":
@@ -45,17 +49,23 @@ class DBStorage:
 
             # for every class type of our system
             for cls in classes:
+                # query to return all objects of type, cls in the db
                 objects = self.__session.query(cls).all()
 
+                # we save the returned objects in a dict of the form
+                # key: <class-name>.<object-id>
+                # value: object
                 for object in objects:
-                    key = "{}.{}".format(object.__class__.__name__, object.id)
+                    key = "{}.{}".format(object.__class__.__name__,
+                                         object.id)
                     dictionary[key] = object
         else:
-            """query to return all objects of the type, cls in the db"""
+            # query to return all objects of the type, cls in the db
             objects = self.__session.query(cls).all()
 
             for object in objects:
-                key = f"{object.__class__.__name__}.{object.id}"
+                key = "{}.{}".format(object.__class__.__name__,
+                                     object.id)
                 dictionary[key] = object
 
         return dictionary
@@ -83,6 +93,6 @@ class DBStorage:
         Session = scoped_session(sess_factory)
         self.__session = Session()
 
-     def close(self):
+    def close(self):
         """ Calls remove() on private session attribute """
         self.__session.close()
